@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0a">
+<title>TravelLOC</title>
+<style>
+:root{--bg:#f5f8f5;--card:#fff;--line:#dfe6df;--g:#22c55e;--gd:#15803d;--tx:#0a0a0a;--mu:#525252;--sh:#0a0a0a;--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0a0a0a;--card:#141414;--line:#262626;--tx:#fff;--mu:#a3a3a3;--gd:#22c55e;--sh:#22c55e}}
+:root[data-theme="dark"]{--bg:#0a0a0a;--card:#141414;--line:#262626;--tx:#fff;--mu:#a3a3a3;--gd:#22c55e;--sh:#22c55e}
+html{height:100%}*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg) linear-gradient(rgba(21,128,61,.07) 1px,transparent 1px) 0 0/32px 32px;background-image:linear-gradient(rgba(21,128,61,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(21,128,61,.07) 1px,transparent 1px);background-size:32px 32px;color:var(--tx);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100%;padding-bottom:calc(74px + env(safe-area-inset-bottom,0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:#0a0a0a;z-index:20}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:#0a0a0a;color:#fff;border-bottom:2px solid #22c55e}
+.bar{display:flex;justify-content:space-between;align-items:center;padding:11px 16px;gap:8px}
+.logo{font-size:23px;font-weight:800}.logo b{color:#22c55e}
+.loc{background:none;border:1px solid #22c55e;color:#22c55e;border-radius:4px;padding:6px 10px;font:700 12px var(--mono)}
+.tick{background:#fff;color:#0a0a0a;font:700 11px var(--mono);overflow:hidden;white-space:nowrap}.trk{display:inline-block;padding:6px 0;animation:mq 40s linear infinite}@keyframes mq{to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.trk{animation:none}}
+main{padding:16px;max-width:640px;margin:auto}
+.view{display:none;counter-reset:s}.view.on{display:block}
+.kick{font:700 12px var(--mono);letter-spacing:1.5px;color:var(--gd);margin-bottom:6px}.kick::before{content:"> "}
+h1{font-size:32px;line-height:1.1;margin-bottom:10px}h2{font-size:24px;line-height:1.2;margin-bottom:8px}h3{font-size:17px;margin-bottom:6px}
+em{color:var(--gd);font-style:normal}.mu{color:var(--mu)}.sm{font:12px var(--mono);letter-spacing:1px;color:var(--mu)}
+.map{position:relative;background:#0a0a0a;border:2px solid #22c55e;border-radius:20px;padding:12px;margin:16px 0 4px;color:#fff;box-shadow:0 12px 40px rgba(21,128,61,.25)}
+.map svg{width:100%;display:block}.map::after{content:"";position:absolute;inset:0;border-radius:20px;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(34,197,94,.06) 0 1px,transparent 1px 3px)}
+.map .st{display:flex;justify-content:space-between;font:12px var(--mono);color:#a3a3a3;padding-top:8px}.map b{color:#22c55e}
+.sec{border-top:2px dashed var(--gd);margin-top:26px;padding-top:14px;position:relative;counter-increment:s}
+.sec::before{content:"// " counter(s,decimal-leading-zero);position:absolute;right:0;top:8px;font:700 12px var(--mono);color:var(--mu)}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:12px 16px;margin:0 -16px}
+.chip{flex:none;border:1px solid var(--line);background:var(--card);color:var(--tx);border-radius:4px;padding:8px 12px;font:700 12px var(--mono)}.chip.on{background:var(--g);color:#000;border-color:#0a0a0a}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:14px}.card.pad{padding:14px}.card.tap{cursor:pointer}.card.me{border:2px solid var(--g);box-shadow:4px 4px 0 var(--sh)}.card.fr{border:4px solid var(--g);box-shadow:5px 5px 0 var(--sh)}
+.card svg{width:100%;display:block}.pv{width:100%;display:block;border-radius:12px;margin-top:10px}
+.cb{padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.d{font:800 24px var(--mono);color:var(--gd)}.badge{font:700 11px var(--mono);padding:3px 8px;background:var(--line);color:var(--mu)}.badge.ok{background:var(--g);color:#000}
+.btn{display:block;width:100%;background:#22c55e;color:#000;font:700 15px var(--mono);border:2px solid #0a0a0a;border-radius:4px;box-shadow:4px 4px 0 var(--sh);padding:13px;margin-top:14px;transition:.12s}
+.btn:active{transform:translate(4px,4px);box-shadow:none}.btn.alt{background:transparent;color:var(--tx);border-color:var(--gd)}
+.back{background:none;border:0;color:var(--gd);font:700 13px var(--mono);padding:0 0 10px}
+.big{text-align:center;padding:16px}.big b{display:block;font:800 40px/1.1 var(--mono);color:var(--gd)}
+input,textarea{width:100%;background:var(--card);color:var(--tx);border:1px solid var(--line);border-radius:6px;padding:12px;margin:6px 0;font:inherit}input:focus,textarea:focus{outline:2px solid var(--g)}select{background:var(--card);color:var(--tx);border:1px solid var(--line);border-radius:6px;padding:10px;font:inherit}
+.note{min-height:22px;margin-top:8px;font-size:14px}.note.err{color:#ef4444}.note.ok{color:var(--gd)}
+.row{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.lb{display:flex;align-items:center;gap:10px;margin:8px 0;font-size:13px}.lb span{width:112px;flex:none;font-weight:600}.lb div{flex:1;height:12px;background:var(--line);border-radius:6px;overflow:hidden}.lb i{display:block;height:100%}
+.av{display:inline-block;width:30px;height:30px;line-height:30px;text-align:center;border-radius:50%;background:#0a0a0a;color:#22c55e;font-weight:800}
+.tg{color:var(--gd);font:700 13px var(--mono);padding:6px 14px 0}.cm{font-size:14px;padding:3px 0}.cmf{display:flex;gap:8px;align-items:center;margin-top:6px}.cmf input{margin:0}.cmf .loc{flex:none;color:var(--gd);border-color:var(--gd)}
+.rv{padding:10px 0;border-bottom:1px solid var(--line)}.rv .st{color:#f59e0b;letter-spacing:2px}
+.ac{display:flex;gap:12px;align-items:center;padding:8px 0}.ac.lk{opacity:.4}.ac .i{font-size:26px}.ac>div{flex:1}.ac .btn{width:auto;margin:0;padding:8px 12px;font-size:12px}
+.ck{list-style:none;padding:0}.ck li{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin-bottom:8px}
+details{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:8px}summary{font-weight:700;cursor:pointer}details p{margin-top:6px}
+.prof{display:flex;gap:14px;align-items:center}.avb{flex:none;width:68px;height:68px;border-radius:50%;border:2px solid var(--g);background:#0a0a0a;font-size:34px}
+.stats{display:flex;justify-content:space-between;margin-top:6px}.stats div{flex:1;text-align:center}.stats b{display:block;font:800 22px var(--mono);color:var(--gd)}.stats span{font-size:11px;color:var(--mu)}
+nav{position:fixed;left:0;right:0;bottom:0;z-index:10;background:#0a0a0a;border-top:2px solid #22c55e;display:flex;padding-bottom:env(safe-area-inset-bottom,0px)}
+nav button{flex:1;background:none;border:0;border-top:3px solid transparent;color:#a3a3a3;padding:8px 0;font:700 10px var(--mono)}nav button span{display:block;font-size:20px}nav button.on{color:#22c55e;border-top-color:#22c55e}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<header><div class="bar"><div class="logo">Travel<b>LOC</b></div><div><span class="loc" id="pts">★ 0</span> <button class="loc" id="locBtn">📍 Где я?</button></div></div><div class="tick"><div class="trk" id="trk"></div></div></header>
+<main>
+<div class="view on" id="v-map">
+  <div class="kick">ГОРОД — ТВОЁ ИГРОВОЕ ПОЛЕ</div>
+  <h1>Найди. Сфотографируй. <em>Захвати территорию.</em></h1>
+  <p class="mu">Приложение показывает только расстояние. Когда вы в 15 метрах, оно меняется на «рядом».</p>
+  <div class="map" id="mapBox"></div>
+  <button class="btn alt" data-v="add">＋ Добавить локацию</button>
+  <div class="chips" id="chips"></div>
+  <div id="list"></div>
+</div>
+
+<div class="view" id="v-place">
+  <button class="back" data-v="map">← НА КАРТУ</button>
+  <div class="kick" id="pCity"></div><h2 id="pName"></h2>
+  <div class="card" id="pPhoto"></div>
+  <p class="mu" id="pDesc"></p>
+  <div class="card big"><span class="sm">РАССТОЯНИЕ ДО ЛОКАЦИИ</span><b id="pDist">—</b><span class="mu" id="pNote"></span></div>
+  <div class="card pad" id="pTerr"></div>
+  <div id="pProof"></div>
+  <button class="btn" id="hereBtn">📷 Я на месте — снять кадр</button>
+  <input type="file" id="cam" accept="image/*" capture="environment" hidden>
+  <div class="note" id="pMsg"></div>
+  <div id="pRev"></div>
+</div>
+
+<div class="view" id="v-feed">
+  <div class="kick">ЛЕНТА</div><h2>Прямо из <em>города</em></h2>
+  <p class="mu">Ваши кадры попадают сюда автоматически: с именем, локацией, датой и хэштегами.</p>
+  <div id="feed" style="margin-top:12px"></div>
+</div>
+
+<div class="view" id="v-fac"></div>
+<div class="view" id="v-rew"></div>
+
+<div class="view" id="v-add">
+  <button class="back" data-v="map">← НА КАРТУ</button>
+  <div class="kick">НОВАЯ ЛОКАЦИЯ</div><h2>Добавьте своё <em>место</em></h2>
+  <p class="mu">За новое место на карте вы получите достижение «Картограф», а другие придут его сфотографировать. Фото только с камеры, координаты берём с GPS.</p>
+  <input id="aName" placeholder="Название (откроется после находки)">
+  <input id="aCity" list="cityList" maxlength="40" placeholder="Город (новый появится в фильтре)"><datalist id="cityList"></datalist>
+  <textarea id="aDesc" rows="3" placeholder="Описание: как найти место"></textarea>
+  <button class="btn alt" id="aPhotoBtn">📷 Снять фото места</button>
+  <input type="file" id="aCam" accept="image/*" capture="environment" hidden>
+  <img class="pv" id="aPv" hidden alt="Снятое фото">
+  <button class="btn alt" id="aDel" hidden>🗑 Удалить фото и переснять</button>
+  <div class="card pad me" id="aVer" hidden style="margin-top:14px"><div class="sm">ПРОВЕРКА ГЕОПОЗИЦИИ</div><h3>Это место точно находится здесь?</h3><div class="d" id="aCoord" style="font-size:18px"></div><div class="sm" id="aVerCity"></div><div style="display:flex;gap:10px"><button class="btn" id="aYes" style="flex:1">Да</button><button class="btn alt" id="aNo" style="flex:1">Нет</button></div></div>
+  <button class="btn" id="aSave">Проверить и опубликовать</button>
+  <div class="note" id="aMsg"></div>
+</div>
+
+<div class="view" id="v-me">
+  <div class="card pad prof"><button class="avb" id="avB" aria-label="Сменить иконку">🐺</button><div style="flex:1;min-width:0"><input id="nick" maxlength="20" placeholder="Никнейм" aria-label="Никнейм"><div class="sm" id="mRole"></div><div class="stats"><div><b id="stA">0</b><span>достижений</span></div><div><b id="stF">0</b><span>найдено</span></div><div><b id="stP">0</b><span>добавлено</span></div></div></div></div>
+  <div class="sec"><div class="kick">КАК ИГРАТЬ</div>
+    <details><summary>📍 1. Найдите место</summary><p class="mu">Смотрите локации рядом или добавляйте свои. Описание подскажет, где искать.</p></details>
+    <details><summary>📸 2. Сделайте фото</summary><p class="mu">Селфи или кадр места камерой приложения, без галереи. Фото попадёт в ленту.</p></details>
+    <details><summary>⭐ 3. Получайте достижения</summary><p class="mu">Первое фото места, новая локация, создание фракции, захват и ежедневные задания.</p></details>
+    <details><summary>🏴 4. Вступите во фракцию</summary><p class="mu">Общий чат, репутация и территория. Одна фракция на игрока, одиночки не захватывают.</p></details>
+    <details><summary>⚔️ 5. Захватывайте территорию</summary><p class="mu">Местом управляет фракция с наибольшим числом активных фото. Соперники могут его вернуть.</p></details>
+    <details><summary>🤝 6. Союзы и чаты</summary><p class="mu">Союз длится 7 дней, один за раз. Для общения есть фракционные и союзные чаты.</p></details>
+  </div>
+  <div class="sec"><div class="kick">О НАС</div>
+    <p class="mu">TravelLOC превращает исследование города в игру. Находите места, фотографируйте, получайте достижения и вместе с фракцией захватывайте карту.</p>
+    <details><summary>Можно ли загружать фото из галереи?</summary><p class="mu">Нет. Снимки делаются только камерой, чтобы каждый кадр был подлинным.</p></details>
+    <details><summary>Как близко нужно подойти?</summary><p class="mu">На 10–15 метров.</p></details>
+    <details><summary>Можно ли играть без фракции?</summary><p class="mu">Да, но без захвата территории.</p></details>
+    <details><summary>Можно ли добавлять свои локации?</summary><p class="mu">Да. Новое место приносит достижение.</p></details>
+  </div>
+  <div class="sec"><div class="kick">КОНТАКТЫ</div>
+    <div class="row"><span class="mu">Email</span><span>hello@travelloc.example</span></div>
+    <div class="row"><span class="mu">Телефон</span><span>+7 (000) 000-00-00</span></div>
+    <div class="row"><span class="mu">Часы работы</span><span>пн–пт, 09:00–18:00</span></div>
+    <h3 style="margin-top:16px">Обратный звонок</h3>
+    <input id="cn" placeholder="Ваше имя"><input id="cp" type="tel" placeholder="Номер телефона">
+    <button class="btn" id="cbBtn">Перезвоните мне</button><div class="note" id="cbMsg"></div>
+  </div>
+  <div class="card pad" style="margin-top:20px"><label class="row" style="border:0"><span>Демо-режим (без проверки GPS)</span><input type="checkbox" id="demo" style="width:auto"></label></div>
+</div>
+</main>
+<nav>
+  <button data-v="map" class="on"><span>🗺️</span>КАРТА</button>
+  <button data-v="feed"><span>📰</span>ЛЕНТА</button>
+  <button data-v="fac"><span>🏴</span>ФРАКЦИИ</button>
+  <button data-v="rew"><span>⭐</span>НАГРАДЫ</button>
+  <button data-v="me"><span>🐺</span>ПРОФИЛЬ</button>
+</nav>
+<script>
+var $=function(i){return document.getElementById(i)},RADIUS=0.015;
+var DATA={"Лондон":[["Вид на Тауэрский мост",51.5055,-0.0754,"bridge","Ищите на северном берегу Темзы, рядом с древней крепостью. Лучший ракурс открывается с набережной на южной стороне: отсюда видны две готические башни, соединённые верхними галереями. Идите вдоль реки и смотрите на мост, середина которого поднимается для проходящих судов. Приходите утром, пока на набережной мало людей."],["Скрытый Neal's Yard",51.5142,-0.1269,"street","Спрятанный дворик в районе театров и рынков, куда ведут узкие проходы между домами. Снаружи ничего не выдаёт, но внутри вас встретят яркие разноцветные фасады, кафе с уличными столиками и крошечные магазинчики. Ищите арку между двумя улицами и заходите внутрь. Лучше всего здесь в солнечный день."],["Вершина Примроуз-Хилл",51.5393,-0.1608,"hill","Невысокий холм у северной границы большого королевского парка. Подниматься придётся пару минут по пологой тропе, зато наверху откроется панорама на небоскрёбы центра. Ищите скамейки на вершине и табличку с обзором горизонта. Особенно красиво здесь на закате, поэтому приходите за час до него."]],
+"Париж":[["Лестницы Монмартра",48.8867,2.3431,"hill","Холм на севере города с белой базиликой на вершине. Поднимайтесь по крутым лестницам и узким мощёным улочкам, где раньше жили художники. Остановитесь на ступенях и обернитесь: город лежит внизу как на ладони. Лучший кадр получается с середины лестницы, пока на ней не собралась толпа."],["Мост канала Сен-Мартен",48.8718,2.3646,"bridge","Тихий канал с чугунными пешеходными мостиками, изогнутыми дугой. Ищите его в оживлённом районе на востоке центра: вода течёт между рядами деревьев, а на берегах сидят местные жители с кофе. Нужный мостик находится рядом со шлюзом, и его силуэт отражается в воде. Приходите ближе к вечеру."],["Пассаж Панорам",48.8710,2.3417,"street","Старый крытый пассаж недалеко от больших бульваров. Вход выглядит как обычная узкая дверь между магазинами, но внутри тянется галерея под стеклянной крышей, с лавками открыток и марок и маленькими кафе. Идите вдоль витрин и смотрите на мозаичный пол и старинные светильники. Лучше всего заходить в дождь, когда свет особенно мягкий."]],
+"Токио":[["Улица кошек в Янаке",35.7279,139.7667,"street","Один из немногих кварталов, переживших войну без больших разрушений. Низкие деревянные дома, тихие переулки и храмы, а на улочках вы часто встретите кошек. Ищите длинную лестницу с лавками внизу: её любят снимать на закате. Ведите себя тихо, здесь живут люди."],["Угол Shibuya Sky",35.6585,139.7022,"hill","Смотровая площадка на крыше небоскрёба прямо над знаменитым перекрёстком. Билет лучше купить заранее и выбрать время заката. Поднимитесь на открытую террасу, подойдите к стеклянному ограждению и посмотрите вниз: пешеходы переходят улицу сразу со всех сторон. Лучший кадр получается с угла террасы."],["Ворота храма Нэдзу",35.7270,139.7608,"bridge","Спокойное святилище на севере центра с прудом и садом. Ищите длинный туннель из ярко-красных ворот, которые идут одни за другими вверх по склону. Весной вокруг цветут азалии, а в остальное время здесь заметно тише, чем в туристических районах. Лучше приходить утром."]],
+"Нью-Йорк":[["Парк Бруклинского моста",40.7003,-73.9967,"bridge","Набережный парк на берегу Ист-Ривер, под огромным мостом на стальных тросах. Идите вдоль воды, пока не увидите пирс с газоном и скамейками. Отсюда видны небоскрёбы нижнего Манхэттена. Лучшие кадры получаются на закате, когда в окнах зданий отражается солнце."],["Конец Хай-Лайн",40.7480,-74.0048,"street","Парк, поднятый над улицами на бывшей железной дороге, где между рельсами растут дикие травы. Идите по деревянному настилу между домами, пока он не приведёт к большому району новой застройки. Именно в этом конце видны рельсы, уходящие в сторону зданий. Приходите в будни, когда народу мало."],["Мостовые DUMBO",40.7033,-73.9881,"street","Мощёная улица между старых кирпичных складов, у самой воды. В конце улицы между двумя зданиями видна арка моста, а над ней небоскрёбы. Встаньте посередине дороги и ищите тот самый кадр, который снимали тысячи фотографов до вас. По улице ездят машины, поэтому снимайте быстро."]]};
+
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+
+function scene(t){var g='<rect width="600" height="320" fill="#0f1a12"/><circle cx="480" cy="80" r="40" fill="#22c55e" opacity=".9"/>';
+  if(t=='bridge')g+='<rect y="230" width="600" height="90" fill="#052e16"/><path d="M40 230 Q300 60 560 230" stroke="#fff" stroke-width="8" fill="none"/>'+[100,160,220,300,380,440,500].map(function(x){return '<line x1="'+x+'" y1="230" x2="'+x+'" y2="'+(230-(120-Math.abs(x-300)*.4))+'" stroke="#22c55e" stroke-width="3"/>'}).join('')+'<rect x="20" y="226" width="560" height="10" fill="#fff"/>';
+  else if(t=='hill')g+='<path d="M0 240 L150 130 L260 210 L380 100 L600 250 L600 320 L0 320Z" fill="#14532d"/><path d="M0 280 L200 200 L400 260 L600 210 L600 320 L0 320Z" fill="#052e16"/><rect x="376" y="60" width="6" height="40" fill="#fff"/>';
+  else g+='<rect y="260" width="600" height="60" fill="#052e16"/>'+[40,130,230,340,450].map(function(x,i){var h=90+(i*37%70);return '<rect x="'+x+'" y="'+(260-h)+'" width="80" height="'+h+'" fill="#14532d"/><rect x="'+(x+14)+'" y="'+(272-h)+'" width="12" height="14" fill="#22c55e"/><rect x="'+(x+44)+'" y="'+(272-h)+'" width="12" height="14" fill="#fff"/>'}).join('');
+  return '<svg viewBox="0 0 600 320" role="img" aria-label="Фото локации">'+g+'</svg>'}
+
+function dist(a,b,c,d){var R=6371,r=Math.PI/180,x=(c-a)*r,y=(d-b)*r,h=Math.sin(x/2)*Math.sin(x/2)+Math.cos(a*r)*Math.cos(c*r)*Math.sin(y/2)*Math.sin(y/2);return 2*R*Math.asin(Math.sqrt(h))}
+
+function fmt(k){return '≈ '+(k<1?Math.round(k*10)*100+' м':k<10?k.toFixed(1).replace('.',',')+' км':Math.round(k).toLocaleString('ru-RU')+' км')}
+
+function shrink(file,cb){var r=new FileReader();r.onload=function(){var i=new Image();i.onload=function(){var s=Math.min(1,640/i.width),c=document.createElement('canvas');c.width=i.width*s;c.height=i.height*s;c.getContext('2d').drawImage(i,0,0,c.width,c.height);cb(c.toDataURL('image/jpeg',.7))};i.src=r.result};r.readAsDataURL(file)}
+
+function msg(id,t,cls){var e=$(id);e.textContent=t;e.className='note '+(cls||'')}
+
+var RV=[['sasha_k',5,'Описание очень помогло, нашла с первого раза. Приходите утром.'],['tim_ber',4,'Красиво, но пришлось покружить. Не торопитесь и смотрите по сторонам.'],['olga.v',5,'Лучшее место за поездку! Кадр получился идеальным.'],['denis_r',4,'Людей много, но ради вида стоит. Берите воду и удобную обувь.'],['mia_go',3,'Нашли не сразу, зато по дороге открыли пару классных улочек.']];
+function revs(id){var a=[];if(id.indexOf('my')!==0){var h=0;for(var i=0;i<id.length;i++)h=(h*31+id.charCodeAt(i))%1000;a=[RV[h%5],RV[(h+2)%5]]}return a.concat(S.rev[id]||[])}
+function renderRev(){var id=cur.id,r=revs(id);
+  $('pRev').innerHTML='<h3 style="margin-top:18px">Отзывы</h3>'+(r.map(function(x){return '<div class="rv"><b>'+esc(x[0])+'</b> <span class="st">'+'★'.repeat(x[1])+'☆'.repeat(5-x[1])+'</span><div class="mu">'+esc(x[2])+'</div></div>'}).join('')||'<p class="mu">Отзывов пока нет.</p>')+
+  (S.found[id]?'<div style="margin-top:12px"><select id="rS"><option value="5">★★★★★</option><option value="4">★★★★</option><option value="3">★★★</option><option value="2">★★</option><option value="1">★</option></select><input id="rT" placeholder="Ваш отзыв"><button class="btn alt" data-rv="1">Оставить отзыв</button></div>':'<p class="mu" style="margin-top:10px">Оставить отзыв можно после находки.</p>')}
+
+var FAC=[{id:'w',n:'Зелёные Волки',c:'#22c55e',b:82},{id:'o',n:'Ночные Совы',c:'#a78bfa',b:64},{id:'l',n:'Городские Лисы',c:'#fb923c',b:47}];
+var ROLES=[['🐺','Одинокий волк','Исследует, снимает, получает достижения. Территорию не захватывает.'],['🛡️','Участник фракции','Борется за территорию и помогает фракции расти.'],['👑','Лидер фракции','Создаёт фракцию, заключает союзы, ведёт команду.']];
+var SHOP=[['🖼️','Персональная рамка','Выделите свои фото в ленте',30,'frame'],['📍','Маркер на карте','Ваши находки отмечены ⭐ на карте',40,'marker'],['🚀','Буст фракции','+2 к захвату с каждого фото (нужна фракция)',50,'boost'],['🔒','Скрытая локация','Откройте эксклюзивное место',60,'hidden']];
+var SEED=[['mira_k','Лондон',0,'12 окт. 2026','Первый кадр утра, туман над рекой!','Ракурс огонь!'],['dan.s','Париж',2,'11 окт. 2026','Селфи под стеклянной крышей. Это место забирает наша фракция.','Ночные Совы не сдаются'],['yuki_t','Токио',0,'10 окт. 2026','Нашёл трёх кошек ещё до прихода сюда.','Кошки на месте!']];
+var CH=[['wolf_anna','Кто сегодня у набережной?'],['dan.s','Беру пассаж, подтягивайтесь']],AV=['🐺','🦊','🦉','🐯','🚀','🧭'];
+var S={found:{},custom:[],demo:false,posts:[],cm:{},rev:{},nick:'traveler_01',av:'🐺',fac:null,myFac:null,ally:null,sc:{},ch:{},pts:0,up:{},fresh:0,caps:0,dayDone:0,founded:0,day:{}};
+try{var raw=localStorage.getItem('tloc2');if(raw)S=Object.assign(S,JSON.parse(raw))}catch(e){}
+var user=null,city='Все',cur=null,addPhoto=null,chan='f',DD={},pend=null;
+function save(){try{localStorage.setItem('tloc2',JSON.stringify(S))}catch(e){}}
+function who(){return S.nick||'traveler_01'}
+function hs(s){var h=0;for(var i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))%1000;return h}
+function facs(){return FAC.concat(S.myFac?[S.myFac]:[])}
+function fOf(id){return facs().filter(function(f){return f.id===id})[0]}
+function role(){return S.fac?(S.fac==='me'?ROLES[2][1]:ROLES[1][1]):ROLES[0][1]}
+function today(){var d=new Date().toDateString();if(S.day.d!==d)S.day={d:d,n:0,fresh:0,cap:0,done:0};return S.day}
+function places(){var a=[];Object.keys(DATA).forEach(function(c){DATA[c].forEach(function(p,i){a.push({id:c+i,city:c,name:p[0],lat:p[1],lng:p[2],type:p[3],desc:p[4]})})});
+  if(S.up.hidden)a.push({id:'hid',city:'Лондон',name:'Тайная терраса у реки',lat:51.5033,lng:-0.1195,type:'hill',desc:'Скрытое место, о котором знают немногие. Найдите большое колесо обозрения на южном берегу и ищите лестницу вниз к воде. С нижней площадки колесо отражается в реке.'});
+  S.custom.forEach(function(p){a.push({id:p.id,city:p.city||'Мои',name:p.name,lat:p.lat,lng:p.lng,photo:p.photo,desc:p.desc})});return a}
+function score(pid,fid){var b=pid.indexOf('my')===0||hs(pid)%3===0||fid==='me'?0:hs(pid+fid)%5;return b+(S.sc[pid+'|'+fid]||0)}
+function ctrl(pid){var best=null,m=0;facs().forEach(function(f){var v=score(pid,f.id);if(v>m){m=v;best=f}});return best}
+function img(p){return p.photo?'<img style="width:100%;display:block" src="'+p.photo+'" alt="Фото локации">':scene(p.type)}
+function dOf(p){if(S.demo){if(!DD[p.id])DD[p.id]=Math.round((0.2+Math.random()*24)*10)/10;return DD[p.id]}return user?dist(user.lat,user.lng,p.lat,p.lng):null}
+function dtxt(d){return d===null?'—':d<=RADIUS?'РЯДОМ':d<1?'≈ '+Math.round(d*100)*10+' м':fmt(d)}
+function tags(p){var n=p.name.replace(/[^\p{L}\p{N}\s]/gu,'').split(/\s+/).filter(Boolean).map(function(w){return w[0].toUpperCase()+w.slice(1)}).join('');return['#TravelLOC',p.city==='Мои'?'#МоиЛокации':'#'+p.city.replace(/[^\p{L}\p{N}]/gu,'')].concat(n?['#'+n]:[])}
+function locate(cb){if(!navigator.geolocation){cb&&cb('Геолокация недоступна на устройстве.');return}
+  $('locBtn').textContent='📍 …';
+  navigator.geolocation.getCurrentPosition(function(pos){user={lat:pos.coords.latitude,lng:pos.coords.longitude};$('locBtn').textContent='📍 Обновить';render();if(cur)showPlace();cb&&cb()},
+  function(){$('locBtn').textContent='📍 Где я?';cb&&cb('Не удалось определить местоположение. Разрешите доступ к геолокации.')},{timeout:10000,enableHighAccuracy:true})}
+function hexes(){var all=places(),s=24,w=Math.sqrt(3)*s,o='';
+  for(var r=0;r<6;r++)for(var c=0;c<6;c++){var p=all[r*6+c],x=14+w/2+c*w+(r%2?w/2:0),y=26+r*s*1.5,q=[],f=p&&ctrl(p.id);
+    for(var k=0;k<6;k++){var a=Math.PI/180*(60*k-30);q.push((x+s*.93*Math.cos(a)).toFixed(1)+','+(y+s*.93*Math.sin(a)).toFixed(1))}
+    o+='<polygon points="'+q.join(' ')+'" fill="'+(p?(f?f.c:'#3f3f3f'):'#161616')+'" stroke="#0a0a0a" stroke-width="2"'+(p?' data-id="'+esc(p.id)+'" style="cursor:pointer"':'')+'/>';
+    if(p&&S.found[p.id])o+='<text x="'+x+'" y="'+(y+5)+'" text-anchor="middle" font-size="14" fill="#fff" pointer-events="none">'+(S.up.marker?'⭐':'●')+'</text>'}
+  return '<svg viewBox="0 0 290 236" role="img" aria-label="Карта территорий">'+o+'</svg>'}
+function render(){
+  var near=places().filter(function(p){var d=dOf(p);return d!==null&&d<=RADIUS}).length;
+  $('pts').textContent='★ '+S.pts;
+  $('mapBox').innerHTML=hexes()+'<div class="st"><span>📍 <b>РЯДОМ</b> · в пределах 15 м: '+near+'</span><span>'+facs().length+' фракции</span></div>';
+  var cs=['Все'].concat(Object.keys(DATA));places().forEach(function(p){if(cs.indexOf(p.city)<0)cs.push(p.city)});
+  $('cityList').innerHTML=cs.slice(1).filter(function(c){return c!=='Мои'}).map(function(c){return '<option value="'+esc(c)+'">'}).join('');
+  $('chips').innerHTML=cs.map(function(c){return '<button class="chip'+(c===city?' on':'')+'" data-c="'+esc(c)+'">'+esc(c)+'</button>'}).join('');
+  var list=places().filter(function(p){return city==='Все'||p.city===city});
+  list.sort(function(a,b){var x=dOf(a),y=dOf(b);return x===null||y===null?0:x-y});
+  $('list').innerHTML=list.map(function(p){var f=S.found[p.id],c=ctrl(p.id);
+    return '<div class="card tap" style="border-left:6px solid '+(c?c.c:'var(--line)')+'" data-id="'+esc(p.id)+'">'+img(p)+'<div class="cb"><div><div class="d">'+dtxt(dOf(p))+'</div><div class="sm">'+(f?esc(p.name).toUpperCase():esc(p.city).toUpperCase()+' · ЛОКАЦИЯ')+(c?' · '+esc(c.n).toUpperCase():'')+'</div></div><span class="badge'+(f?' ok':'')+'">'+(f?'✓ НАЙДЕНО':'ИЩЕМ')+'</span></div></div>'}).join('')}
+function terr(p){var m=0,rows=facs().map(function(f){var v=score(p.id,f.id);m=Math.max(m,v);return[f,v]}),c=ctrl(p.id);
+  return '<div class="sm">ТЕРРИТОРИЯ: '+(c?'<b style="color:'+c.c+'">'+esc(c.n).toUpperCase()+'</b>':'СВОБОДНО')+'</div>'+rows.map(function(r){return '<div class="lb"><span>'+esc(r[0].n)+'</span><div><i style="width:'+(m?r[1]/m*100:0)+'%;background:'+r[0].c+'"></i></div><b>'+r[1]+'</b></div>'}).join('')}
+function openPlace(id){cur=places().filter(function(p){return p.id===id})[0];msg('pMsg','');show('place');showPlace();if(!user&&!S.demo)locate()}
+function showPlace(){var p=cur,f=S.found[p.id],d=dOf(p);
+  $('pCity').textContent=p.city.toUpperCase();$('pName').textContent=f?p.name:'Скрытая локация';$('pPhoto').innerHTML=img(p);$('pDesc').textContent=p.desc||'Описание не указано.';
+  $('pDist').textContent=dtxt(d);$('pNote').textContent=d===null?'Определите местоположение':S.demo?'Демо-режим: случайное расстояние':d<=RADIUS?'Вы на месте. Снимайте!':'По прямой от вас. Подойдите на 15 м.';
+  $('pTerr').innerHTML=terr(p);
+  $('pProof').innerHTML=f&&f.photo?'<div class="sm">ВАШ КАДР</div><img class="pv" src="'+f.photo+'" alt="Ваш кадр">':'';
+  $('hereBtn').textContent=f?'📷 Переснять кадр':'📷 Я на месте — снять кадр';renderRev()}
+function chkDay(){var d=today();if(!d.done&&d.n>=3&&d.fresh&&d.cap){d.done=1;S.dayDone++;S.pts+=15}}
+function addPost(p,url){S.posts.unshift({id:'u'+Date.now(),pid:p.id,name:p.name,tags:tags(p),photo:url,ts:Date.now(),fac:S.fac})}
+function won(p,url){var d=today(),before=ctrl(p.id),fresh=hs(p.id)%3===0&&p.id.indexOf('my')!==0,t='Локация найдена! +10 ★';
+  S.pts+=10;d.n++;
+  if(fresh){S.fresh++;d.fresh=1;S.pts+=10;t+=' Вы первый на месте: +10 ★'}
+  if(S.fac){var k=p.id+'|'+S.fac;S.sc[k]=(S.sc[k]||0)+3+(S.up.boost?2:0);var a=ctrl(p.id);
+    if(a&&a.id===S.fac&&(!before||before.id!==S.fac)){S.caps++;d.cap=1;S.pts+=25;t+=' Территория захвачена: +25 ★'}else t+=' Фракция получила очки территории.'}
+  else t+=' Без фракции территорию не захватить.';
+  addPost(p,url);chkDay();return t}
+function renderFeed(){
+  var it=S.posts.map(function(x){return{id:x.id,u:who(),own:1,pl:x.name,d:new Date(x.ts).toLocaleDateString('ru-RU'),cap:'Новая находка!',img:'<img style="width:100%;display:block" src="'+x.photo+'" alt="Фото">',tg:x.tags,cm:[],f:x.fac}});
+  SEED.forEach(function(s,i){var p=DATA[s[1]][s[2]];it.push({id:'s'+i,u:s[0],pl:p[0],d:s[3],cap:s[4],img:scene(p[3]),tg:tags({city:s[1],name:p[0]}),cm:[['anna_walks',s[5]]]})});
+  $('feed').innerHTML=it.map(function(x){var cm=x.cm.concat(S.cm[x.id]||[]),fa=x.f&&fOf(x.f);
+    return '<div class="card'+(x.own&&S.up.frame?' fr':'')+'"><div class="cb"><span><span class="av">'+(x.own?S.av:esc(x.u[0].toUpperCase()))+'</span> <b>@'+esc(x.u)+'</b>'+(fa?' <small style="color:'+fa.c+'">['+esc(fa.n)+']</small>':'')+'<div class="sm" style="letter-spacing:0">'+esc(x.pl)+' · '+x.d+'</div></span></div>'+x.img+'<div style="padding:10px 14px 0">'+esc(x.cap)+'</div><div class="tg">'+x.tg.map(esc).join(' ')+'</div><div style="padding:6px 14px 12px">'+cm.map(function(c){return '<div class="cm"><b>'+esc(c[0])+'</b> '+esc(c[1])+'</div>'}).join('')+'<div class="cmf"><input placeholder="Комментарий…" id="ci'+x.id+'"><button class="loc" data-cm="'+x.id+'">Отпр.</button></div></div></div>'}).join('')}
+function chKey(){return chan==='a'&&S.ally?'a'+S.ally.f:'f'+S.fac}
+function renderFac(){var f=S.fac&&fOf(S.fac),a=S.ally&&S.ally.until>Date.now()?S.ally:null;if(S.ally&&!a)S.ally=null;
+  var L=facs().map(function(x){return[x,x.b+places().filter(function(p){var c=ctrl(p.id);return c&&c.id===x.id}).length*5]}),m=Math.max.apply(null,L.map(function(x){return x[1]}));
+  var h='<div class="kick">ФРАКЦИИ И ТЕРРИТОРИЯ</div><h2>Боритесь за город <em>вместе</em></h2><p class="mu">Одна фракция на игрок. Контроль над местом получает та, что вносит больше всего активных фото.</p><div style="margin-top:12px">'+
+  ROLES.map(function(r){return '<div class="card pad'+(role()===r[1]?' me':'')+'"><b>'+r[0]+' '+r[1]+'</b><div class="mu">'+r[2]+'</div></div>'}).join('')+'</div><div class="sec"><h3>Ваша фракция</h3>';
+  if(f){h+='<div class="card pad"><b style="color:'+f.c+'">'+esc(f.n)+'</b><div class="mu">'+role()+'</div><button class="btn alt" data-leave="1">Выйти из фракции</button></div>'}
+  else{h+='<div class="card pad"><div class="sm">СОЗДАТЬ ФРАКЦИЮ (+30 ★)</div><input id="fn" maxlength="24" placeholder="Название фракции"><button class="btn" data-create="1">Стать лидером</button></div>'+FAC.map(function(x){return '<div class="card pad"><b style="color:'+x.c+'">'+esc(x.n)+'</b><button class="btn alt" data-join="'+x.id+'">Вступить</button></div>'}).join('')}
+  h+='</div><div class="sec"><h3>Лучшие фракции недели</h3>'+L.map(function(x){return '<div class="lb"><span>'+esc(x[0].n)+'</span><div><i style="width:'+x[1]/m*100+'%;background:'+x[0].c+'"></i></div><b>'+x[1]+'</b></div>'}).join('')+'</div>';
+  h+='<div class="sec"><h3>🤝 Союзы</h3><p class="mu">Союз длится 7 дней, один за раз. Заключает его лидер.</p>';
+  if(a)h+='<div class="card pad me">Союз с <b>'+esc(fOf(a.f).n)+'</b> до '+new Date(a.until).toLocaleDateString('ru-RU')+'</div>';
+  else if(S.fac==='me')h+=FAC.map(function(x){return '<button class="btn alt" data-ally="'+x.id+'">Союз с «'+esc(x.n)+'»</button>'}).join('');
+  h+='</div><div class="sec"><h3>💬 Чат</h3>';
+  if(!S.fac)h+='<p class="mu">Вступите во фракцию, чтобы открыть чат.</p>';
+  else{if(chan==='a'&&!a)chan='f';var k=chKey(),ms=(S.ch[k]&&S.ch[k].length?[]:CH).concat(S.ch[k]||[]);
+    h+='<div class="chips" style="padding:0 0 8px;margin:0"><button class="chip'+(chan==='f'?' on':'')+'" data-ch="f">Фракция</button>'+(a?'<button class="chip'+(chan==='a'?' on':'')+'" data-ch="a">Союз</button>':'')+'</div><div class="card pad">'+ms.map(function(c){return '<div class="cm"><b>'+esc(c[0])+'</b> '+esc(c[1])+'</div>'}).join('')+'<div class="cmf"><input id="chI" placeholder="Сообщение…"><button class="loc" data-send="1">Отпр.</button></div></div>'}
+  $('v-fac').innerHTML=h+'</div>'}
+function achs(){return[['🥇','Первый на месте','Будьте первым, кто сфотографировал локацию.',S.fresh>0],['📌','Картограф','Добавьте новое место на карту.',S.custom.length>0],['🏴','Основатель','Создайте фракцию.',!!S.founded],['⚔️','Завоеватель','Выиграйте захват территории.',S.caps>0],['🎯','Ежедневный игрок','Выполните все ежедневные задания.',S.dayDone>0]]}
+function renderRew(){var d=today(),T=[['Сфотографируйте 3 новые локации',d.n>=3],['Посетите место, где никто не был',!!d.fresh],['Захватите локацию для своей фракции',!!d.cap]];
+  $('v-rew').innerHTML='<div class="kick">ДОСТИЖЕНИЯ И ЗАДАНИЯ</div><h2>Каждый ход <em>окупается</em></h2><div class="card big"><span class="sm">ВАШИ ОЧКИ</span><b>★ '+S.pts+'</b></div>'+
+  '<div class="sec"><h3>Как получить</h3>'+achs().map(function(x){return '<div class="ac'+(x[3]?'':' lk')+'"><span class="i">'+x[0]+'</span><div><b>'+x[1]+'</b><div class="mu" style="font-size:13px">'+x[2]+'</div></div>'+(x[3]?'✓':'')+'</div>'}).join('')+'</div>'+
+  '<div class="sec"><h3>На что потратить</h3>'+SHOP.map(function(x,i){return '<div class="ac"><span class="i">'+x[0]+'</span><div><b>'+x[1]+'</b><div class="mu" style="font-size:13px">'+x[2]+'</div></div>'+(S.up[x[4]]?'✓':'<button class="btn" data-buy="'+i+'">'+x[3]+' ★</button>')+'</div>'}).join('')+'</div>'+
+  '<div class="sec"><h3>Ежедневные задания (+15 ★)</h3><ul class="ck">'+T.map(function(t){return '<li>'+(t[1]?'☑':'☐')+'  '+t[0]+'</li>'}).join('')+'</ul></div>'}
+function renderMe(){var n=Object.keys(S.found).filter(function(k){return k.indexOf('my')!==0}).length;
+  $('nick').value=S.nick||'';$('avB').textContent=S.av;$('mRole').textContent=role().toUpperCase()+(S.fac?' · '+fOf(S.fac).n.toUpperCase():'');
+  $('stA').textContent=achs().filter(function(x){return x[3]}).length;$('stF').textContent=n;$('stP').textContent=S.custom.length;$('demo').checked=S.demo}
+function show(v){document.querySelectorAll('.view').forEach(function(e){e.classList.toggle('on',e.id==='v-'+v)});
+  document.querySelectorAll('nav button').forEach(function(b){b.classList.toggle('on',b.dataset.v===v||(b.dataset.v==='map'&&(v==='place'||v==='add')))});
+  window.scrollTo(0,0);var R={feed:renderFeed,fac:renderFac,rew:renderRew,me:renderMe,map:render};if(R[v])R[v]()}
+document.addEventListener('click',function(e){var t=e.target.closest('[data-v],[data-c],[data-id],[data-cm],[data-rv],[data-join],[data-leave],[data-create],[data-ally],[data-ch],[data-send],[data-buy]');if(!t)return;var d=t.dataset,v;
+  if('v' in d)show(d.v);else if('c' in d){city=d.c;render()}else if('id' in d)openPlace(d.id);
+  else if('cm' in d){v=$('ci'+d.cm).value.trim();if(v){(S.cm[d.cm]=S.cm[d.cm]||[]).push([who(),v]);save();renderFeed()}}
+  else if('rv' in d){v=$('rT').value.trim();if(v){(S.rev[cur.id]=S.rev[cur.id]||[]).push([who(),+$('rS').value,v]);save();renderRev()}}
+  else if('join' in d){if(!S.fac){S.fac=d.join;save();renderFac()}}
+  else if('leave' in d){if(S.fac==='me'){S.myFac=null;S.ally=null}S.fac=null;save();renderFac()}
+  else if('create' in d){v=$('fn').value.trim();if(v){S.myFac={id:'me',n:v,c:'#38bdf8',b:0};S.fac='me';if(!S.founded){S.founded=1;S.pts+=30}save();renderFac()}}
+  else if('ally' in d){S.ally={f:d.ally,until:Date.now()+6048e5};save();renderFac()}
+  else if('ch' in d){chan=d.ch;renderFac()}
+  else if('send' in d){v=$('chI').value.trim();if(v){var k=chKey();(S.ch[k]=S.ch[k]||[]).push([who(),v]);save();renderFac()}}
+  else if('buy' in d){var x=SHOP[+d.buy];if(!S.up[x[4]]&&S.pts>=x[3]){S.pts-=x[3];S.up[x[4]]=1;save();renderRew()}}});
+$('locBtn').onclick=function(){locate()};
+$('hereBtn').onclick=function(){if(S.demo||S.found[cur.id]){$('cam').click();return}
+  locate(function(err){if(err){msg('pMsg',err,'err');return}var d=dOf(cur);if(d>RADIUS)msg('pMsg','Вы ещё далеко: '+dtxt(d)+'. Нужно подойти на 15 м.','err');else $('cam').click()})};
+$('cam').onchange=function(){var f=this.files[0];this.value='';if(!f)return;shrink(f,function(url){var first=!S.found[cur.id],t='Кадр сохранён.';S.found[cur.id]={photo:url,ts:Date.now()};if(first)t=won(cur,url);save();msg('pMsg',t,'ok');showPlace();render()})};
+$('aPhotoBtn').onclick=function(){$('aCam').click()};
+$('aCam').onchange=function(){var f=this.files[0];this.value='';if(!f)return;shrink(f,function(u){addPhoto=u;$('aPv').src=u;$('aPv').hidden=false;$('aDel').hidden=false;msg('aMsg','')})};
+$('aDel').onclick=function(){addPhoto=null;$('aPv').hidden=true;$('aPv').removeAttribute('src');this.hidden=true;msg('aMsg','Фото удалено. Снимите новое.')};
+$('aSave').onclick=function(){var n=$('aName').value.trim();var cy=$('aCity').value.trim();if(!n||!cy||!addPhoto){msg('aMsg','Снимите фото, введите название и город.','err');return}
+  msg('aMsg','Определяем координаты…');
+  locate(function(err){var u=user||(S.demo?{lat:35.6812,lng:139.7671}:null);if(!u){msg('aMsg',err||'Нет координат.','err');return}pend={lat:u.lat,lng:u.lng};$('aCoord').textContent=u.lat.toFixed(5)+', '+u.lng.toFixed(5);$('aVerCity').textContent='ГОРОД: '+cy.toUpperCase();$('aVer').hidden=false;$('aSave').hidden=true;msg('aMsg','');$('aVer').scrollIntoView({block:'center'})
+    
+    })};
+$('aNo').onclick=function(){pend=null;$('aVer').hidden=true;$('aSave').hidden=false;msg('aMsg','Подойдите ближе к месту и повторите проверку.','err')};
+$('aYes').onclick=function(){if(!pend)return;var n=$('aName').value.trim(),cy=$('aCity').value.trim(),id='my'+Date.now();
+  S.custom.push({id:id,name:n,city:cy,desc:$('aDesc').value.trim(),lat:pend.lat,lng:pend.lng,photo:addPhoto});S.found[id]={ts:Date.now()};S.pts+=20;addPost({id:id,city:cy,name:n},addPhoto);save();pend=null;
+  $('aName').value='';$('aCity').value='';$('aDesc').value='';$('aPv').hidden=true;$('aDel').hidden=true;$('aVer').hidden=true;$('aSave').hidden=false;addPhoto=null;msg('aMsg','Локация добавлена! Достижение «Картограф» +20 ★','ok');render()};
+$('nick').oninput=function(){S.nick=this.value.trim();save()};
+$('avB').onclick=function(){S.av=AV[(AV.indexOf(S.av)+1)%AV.length];save();renderMe()};
+$('demo').onchange=function(){S.demo=this.checked;save();render()};
+$('cbBtn').onclick=function(){var n=$('cn').value.trim(),p=$('cp').value.trim();if(n&&p){msg('cbMsg','Спасибо, '+n+'! Мы скоро вам перезвоним.','ok');$('cn').value='';$('cp').value=''}else msg('cbMsg','Введите имя и номер телефона.','err')};
+var TK='ГОРОД — ТВОЁ ИГРОВОЕ ПОЛЕ // ЗЕЛЁНЫЕ ВОЛКИ УДЕРЖИВАЮТ ЛИДЕРСТВО // СОЮЗ ДЛИТСЯ 7 ДНЕЙ // ФОТО ТОЛЬКО С КАМЕРЫ // ';$('trk').textContent=TK+TK+TK+TK;
+today();render();
+</script>
+</body>
+</html>
